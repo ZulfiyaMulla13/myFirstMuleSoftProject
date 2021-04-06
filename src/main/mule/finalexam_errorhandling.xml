@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="03be8922-b21b-424f-b358-1471ec9c804a" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="92f9b10f-5a32-4ee1-8559-7d91e1b66f01" />
+	<flow name="finalexam_errorhandlingFlow" doc:id="3826d949-ed09-4ffc-bf4f-81256420e206" >
+		<http:listener doc:name="Listener" doc:id="f1094093-a65d-4036-be7e-bd096d95ba36" allowedMethods="GET" config-ref="HTTP_Listener_config" path="/errorhandling"/>
+		<http:request method="GET" doc:name="Request" doc:id="8070e068-2fdc-41a9-bf9b-4e30b9ef8d0b" config-ref="HTTP_Request_configuration" url="http://acme.com/virgin">
+			<error-mapping sourceType="HTTP:NOT_FOUND" targetType="APP:API_RESOURCE_NOT_FOUND" />
+		</http:request>
+		<set-payload value='#["Success-Main flow"]' doc:name='"Success-Main flow"' doc:id="a64f8141-c00f-4f51-be85-198d63f28783" />
+		<error-handler>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="5b981127-8e29-4e68-9327-3660340f2f84" type="HTTP:NOT_FOUND">
+				<set-payload value='#["HTTP:NOT FOUND"]' doc:name='"HTTP:NOT FOUND"' doc:id="50ad3c3e-e2a9-42b3-b033-c2bf19f3dd40" />
+			</on-error-propagate>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="78450d4a-9b4a-4fdf-8e72-a2b9b49c0d7c" type="APP:API_RESOURCE_NOT_FOUND">
+				<set-payload value='#["APP:API_RESOURCE_NOT_FOUND"]' doc:name='"APP:API_RESOURCE_NOT_FOUND"' doc:id="b5aaac7e-a7cd-4ad5-a788-e5bcc43a137f" />
+			</on-error-continue>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="44261e5a-8322-441a-86fb-d89f56382df3" when="#[true]">
+				<set-payload value='#["others"]' doc:name='"others"' doc:id="966084f7-c35f-4a38-b5cb-6cad1c88d55d" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="finalexam_errorhandlingFlow1" doc:id="3aa3758f-3001-47eb-b4c0-0c9e7216e543" >
+		<http:listener doc:name="HTTP:GET/" doc:id="9b00c184-324a-4fa3-bdec-3451e6c16df6" config-ref="HTTP_Listener_config" path="/errorhandling2"/>
+		<set-payload value='#["Success-Begin"]' doc:name='"Success-Begin"' doc:id="6b7cc0bc-04b8-49b7-a59a-3fca126e966a" />
+		<http:request method="GET" doc:name="HTTP:GET/data" doc:id="f9640497-05ea-431b-ac66-20447412eb7e" config-ref="HTTP_Request_configuration" url="http://acme.com/virgin"/>
+		<set-payload value='#["Success-End"]' doc:name='"Success-End"' doc:id="8f8cf7eb-beea-406f-ba80-31f9646c694c" />
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="bc993399-a73e-4e11-bba1-4bc926e28f80" >
+				<set-payload value='#["Error"]' doc:name='"Error"' doc:id="378eec0b-218d-493b-be39-0836f4192985" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>
