@@ -13,6 +13,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		<http:request method="GET" doc:name="Request" doc:id="8070e068-2fdc-41a9-bf9b-4e30b9ef8d0b" config-ref="HTTP_Request_configuration" url="http://acme.com/virgin">
 			<error-mapping sourceType="HTTP:NOT_FOUND" targetType="APP:API_RESOURCE_NOT_FOUND" />
 		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="21aaff08-a7a5-4f42-8fab-6b42149cc6c4" message='#["New Update"]'/>
 		<set-payload value='#["Success-Main flow"]' doc:name='"Success-Main flow"' doc:id="a64f8141-c00f-4f51-be85-198d63f28783" />
 		<error-handler>
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="5b981127-8e29-4e68-9327-3660340f2f84" type="HTTP:NOT_FOUND">
